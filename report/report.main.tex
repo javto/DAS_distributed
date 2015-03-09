@@ -1,0 +1,57 @@
+\documentclass[12pt,journal, compsoc]{IEEEtran}
+\usepackage{xcolor}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{algorithm} %Pseudocode
+\usepackage[noend]{algpseudocode} %Pseudocode
+\usepackage[colorinlistoftodos]{todonotes}%todo
+\usepackage{amsthm} %theorem
+\usepackage[nameinlink,capitalise]{cleveref} %clever referencing with \cref
+\usepackage[fleqn]{amsmath}
+\usepackage{units}%\nicefrac
+\usepackage{mathtools} %floor and ceiling
+ \usepackage{grffile}%prevent file name of figure
+
+%\newcommand\todo[1]{\textcolor{red}{#1}}
+% correct bad hyphenation here
+%example: \hyphenation{op-tical net-works semi-conduc-tor}
+
+\newtheorem{alg}{Algorithm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+
+\setlength{\mathindent}{0cm}
+
+\begin{document}
+
+\title{IN4391: Distributed Computing Systems, Large Lab Exercise}
+
+\author{Wouter Uijens(~~~~), Jaap van Touw (1380753) \\Course Instructor: Dr.ir. Alexandru Iosup\\ TAs: Ir. Mihai Capot\u{a}  and Drs. Yong Guo\\ \IEEEmembership{Delft University of Technology}}
+
+% The paper headers
+\markboth{IN4391: Distributed Computing Systems, Large Lab Exercise \today}
+{Uijens \& van Touw \MakeLowercase{\textit{et al.}}:  Large Lab Exercise}
+
+\IEEEtitleabstractindextext{
+\input{abstract.tex}
+}
+
+\maketitle
+\IEEEdisplaynontitleabstractindextext
+\IEEEpeerreviewmaketitle
+\nocite{*}
+\input{C_introduction.tex}	
+\input{C_background.tex}			
+\input{C_sysdesign.tex}					
+\input{C_experiments.tex}			
+\input{C_discussion.tex}			
+\input{C_conclusion.tex}
+
+\bibliographystyle{plain}
+\bibliography{list_of_all_publications}
+\appendix
+\input{appendices/appendix.main.tex}
+\input{appendices/timesheet.tex}
+\end{document}
+
+

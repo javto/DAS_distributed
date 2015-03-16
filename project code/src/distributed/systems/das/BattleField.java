@@ -2,16 +2,17 @@ package distributed.systems.das;
 
 import java.util.ArrayList;
 
+import distributed.systems.core.IMessageReceivedHandler;
+import distributed.systems.core.LocalSocket;
+import distributed.systems.core.Message;
+import distributed.systems.core.Socket;
+import distributed.systems.core.SynchronizedSocket;
+import distributed.systems.core.exception.AlreadyAssignedIDException;
+import distributed.systems.core.exception.IDNotAssignedException;
 import distributed.systems.das.units.Dragon;
 import distributed.systems.das.units.Player;
 import distributed.systems.das.units.Unit;
 import distributed.systems.das.units.Unit.UnitType;
-import distributed.systems.core.IMessageReceivedHandler;
-import distributed.systems.core.Message;
-import distributed.systems.core.Socket;
-import distributed.systems.core.SynchronizedSocket;
-import distributed.systems.core.exception.IDNotAssignedException;
-import distributed.systems.example.LocalSocket;
 
 /**
  * The actual battlefield where the fighting takes place.
@@ -53,7 +54,12 @@ public class BattleField implements IMessageReceivedHandler {
 		
 		synchronized (this) {
 			map = new Unit[width][height];
-			local.register(BattleField.serverID);
+			try {
+				local.register(BattleField.serverID);
+			} catch (AlreadyAssignedIDException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			serverSocket = new SynchronizedSocket(local);
 			serverSocket.addMessageReceivedHandler(this);
 			units = new ArrayList<Unit>();

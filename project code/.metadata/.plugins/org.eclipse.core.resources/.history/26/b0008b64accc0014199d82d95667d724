@@ -33,9 +33,18 @@ public class MirrorServer
 	//insert a move into the traling-states. This is the method that needs to be called by the other servers.
 	public void insertMove(Move m)
 	{
-		for(int i=0; 0 < numberOfTrailingStates; i--)
+		/*TODO: should we make this concurrent? 
+		 * pro: major performance gain, part of the reason to use trailing states at all is that they can compute concurrently
+		 * con: lots of headaches as to how to handle rollbacks.
+		 */
+		for(int i=numberOfTrailingStates-1; 0<=i; i--)
 		{
-			trailingStates[i].insertMove(m);
+			// if a rollback occurs when inserting the move, the rollback propagates through the more recent states.
+			// so inserting the move into those states would cause the move to be executed twice.
+			if(trailingStates[i].insertMove(m))
+			{
+				break;
+			}
 		}
 	}
 	

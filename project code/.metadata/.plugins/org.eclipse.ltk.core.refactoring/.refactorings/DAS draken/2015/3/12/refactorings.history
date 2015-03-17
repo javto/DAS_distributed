@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename field &apos;moveSuccesfull&apos; in &apos;MoveEffect&apos; to &apos;moveSuccessful&apos;&#x0D;&#x0A;- Original project: &apos;DAS draken&apos;&#x0D;&#x0A;- Original element: &apos;MoveEffect.moveSuccesfull&apos;&#x0D;&#x0A;- Renamed element: &apos;MoveEffect.moveSuccessful&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" delegate="false" deprecate="false" description="Rename field &apos;moveSuccesfull&apos;" flags="589830" getter="false" id="org.eclipse.jdt.ui.rename.field" input="/src&lt;{MoveEffect.java[MoveEffect^moveSuccesfull" name="moveSuccessful" references="true" setter="false" stamp="1426599420977" textual="false" version="1.0"/>
+</session>

@@ -1,7 +1,4 @@
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import distributed.systems.das.BattleField;
 import distributed.systems.das.units.Unit;
@@ -13,19 +10,16 @@ public class Move
 {
 	Date executionTime;
 	Unit mover;
-	Point target;
+	int targetX, targetY;
 	Action action;
 	
-	Map<TrailingState, MoveEffect> effectsOfThisMove;
-	
-	public Move(Unit mover, Point target, Action action, Date executionTime)
+	public Move(Unit mover, int targetX, int targetY, Action action, Date executionTime)
 	{
 		this.executionTime = executionTime;
 		this.mover = mover;
-		this.target = target;
+		this.targetX = targetX;
+		this.targetY = targetY;
 		this.action = action;
-		
-		effectsOfThisMove = Collections.synchronizedMap(new HashMap<TrailingState, MoveEffect>());
 	}
 	
 	//tests whether this move needs to be applied earlier than the given move.
@@ -48,23 +42,21 @@ public class Move
 		return Math.abs(executionTime.getTime() - m.executionTime.getTime());
 	}
 	
-	
+	//tests whether this moves conflicts with the given move. So if applying them in different order could result in a different gamestate.
+	public boolean conflictsWith(Move m)
+	{
+		//TODO: this is still the most conservative placeholder answer: moves conflict always.
+		return true;
+	}
 	
 	// Apply the move to the state.
 	// This does not check whether the move is valid!
-	public void execute(TrailingState executingState, BattleField beforeState)
+	public void execute(BattleField beforeState)
 	{
-		MoveEffect effect = new MoveEffect();
-		effect.setInitiator(mover);//TODO: get a copy of the mover instead of the mover itself.
-		//TODO: get the content of the target square (unit or null) and set a copy of it as the subject of the MoveEffect.
-		// if the move isn't valid, don't execute it.
-		if(! this.valid(beforeState) )
-		{
-			effect.setMoveSuccesfull(false);
-			return;
-		}
-		
 		//TODO: actually execute the move.
+		/*optional:
+		 * if(! this.valid(beforeState) ) { return; }
+		 * */
 		switch(action)
 		{
 			case Heal:

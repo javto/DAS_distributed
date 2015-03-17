@@ -46,34 +46,17 @@ public class TrailingState
 	{
 		while( !moves.isEmpty() )
 		{
-			Move nextMove = moves.get(0);
-			if(nextMove.canBeExecutedNow(delayDelta))
-			{
-				nextMove.execute(this, currentState);
-				if(nextMove.differentEffects(this, this.firstMoreRecentState))
-				{
-					this.firstMoreRecentState.rollBack(currentState, moves);
-				}
-			}
-			else
-			{
-				try {
-					Thread.sleep(moves.get(0).timeUntillExecution(delayDelta));
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			moves.get(0)
 		}
 	}
 	
 	
 	//perform rollback
 	@SuppressWarnings("unchecked")
-	public void rollBack(BattleField rollbackState, List<Move> movesToBeDone)
+	public void rollBack(BattleField rollbackState, LinkedList<Move> movesToBeDone)
 	{
 		this.currentState = rollbackState.clone(); // we need a deep-copy method for BattleField.
-		//TODO: we need a clone method for a synchronised list.
+		//TODO: wat gebeurt er als je een synchronizedlist cloned?
 		this.moves = (LinkedList<Move>)movesToBeDone.clone();
 		// Note: as the moves are ordered chronologically in the time to be executed, we can stop as soon as we find a move that we can no longer execute right away.
 		for(int i = 0; i < moves.size();i++)

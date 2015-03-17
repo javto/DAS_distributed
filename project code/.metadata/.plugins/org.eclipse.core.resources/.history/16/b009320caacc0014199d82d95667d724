@@ -52,15 +52,11 @@ public class Move
 	
 	// Apply the move to the state.
 	// This does not check whether the move is valid!
-	public void execute(TrailingState executingState, BattleField beforeState)
+	public void execute(BattleField beforeState)
 	{
-		MoveEffect effect = new MoveEffect();
-		effect.setInitiator(mover);//TODO: get a copy of the mover instead of the mover itself.
-		//TODO: get the content of the target square (unit or null) and set a copy of it as the subject of the MoveEffect.
 		// if the move isn't valid, don't execute it.
 		if(! this.valid(beforeState) )
 		{
-			effect.setMoveSuccesfull(false);
 			return;
 		}
 		

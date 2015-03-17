@@ -1,5 +1,7 @@
 package distributed.systems.core;
 
+import java.util.HashMap;
+
 import distributed.systems.core.exception.AlreadyAssignedIDException;
 import distributed.systems.core.exception.IDNotAssignedException;
 import distributed.systems.das.BattleField;
@@ -7,8 +9,15 @@ import distributed.systems.das.units.Unit;
 
 
 
-public class Socket {
+public class Socket implements Runnable{
 
+	Thread battleFieldThread;
+	//key is ID	
+	HashMap<Integer, Thread> unitTreads;
+	
+	public void run() {
+		
+	}
 	public void sendMessage(Message damageMessage, String string) throws IDNotAssignedException{
 		// TODO Auto-generated method stub
 		
@@ -30,7 +39,7 @@ public class Socket {
 	 * @param battleField
 	 */
 	public void addMessageReceivedHandler(BattleField battleField) {
-
+		Thread battleFieldThread = new Thread();
 	}
 
 	/**
@@ -40,4 +49,6 @@ public class Socket {
 	public void addMessageReceivedHandler(Unit unit) {
 
 	}
+	
+	
 }

@@ -1,5 +1,9 @@
 package distributed.systems.das.units;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -409,4 +413,46 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		}
 		
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + unitID;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Unit other = (Unit) obj;
+		if (unitID != other.unitID)
+			return false;
+		return true;
+	}
+
+	/**
+	 * returns a deep copy of the unit
+	 * @param object
+	 * @return
+	 */
+	public static Unit deepClone(Unit toCopy) {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(toCopy);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (Unit)ois.readObject();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
+

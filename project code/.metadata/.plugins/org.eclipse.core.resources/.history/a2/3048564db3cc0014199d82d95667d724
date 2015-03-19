@@ -39,12 +39,7 @@ public class Move
 	{
 		// Note: 'new Date()' gives the current time.
 		// So we test: (executionTime + delay) < currentTime
-		return (executionTime.getTime() + delay.getTime()) <= (new Date()).getTime();
-	}
-	
-	public long timeUntillExecution(Date deltaDelay)
-	{
-		return executionTime.getTime() + deltaDelay.getTime() - (new Date()).getTime();
+		return (executionTime.getTime() + delay.getTime()) < (new Date()).getTime();
 	}
 	
 	//get the absolute time difference between the execution times of these 2 moves in milliseconds.
@@ -53,22 +48,10 @@ public class Move
 		return Math.abs(executionTime.getTime() - m.executionTime.getTime());
 	}
 	
-	// return true if this move had different effects in these 2 traling states
-	public boolean differentEffects(TrailingState ts1, TrailingState ts2)
-	{
-		if(ts1==null || ts2== null)
-		{
-			return false;
-		}
-		MoveEffect effect1 = this.effectsOfThisMove.get(ts1);
-		MoveEffect effect2 = this.effectsOfThisMove.get(ts2);
-		
-		// gives an exception if the move hasn't been executed in both contexts.
-		return !effect1.equals(effect2);
-	}
+	
 	
 	// Apply the move to the state.
-	//
+	// This does not check whether the move is valid!
 	public void execute(TrailingState executingState, BattleField beforeState)
 	{
 		MoveEffect effect = new MoveEffect();
@@ -77,33 +60,25 @@ public class Move
 		// if the move isn't valid, don't execute it.
 		if(! this.valid(beforeState) )
 		{
-			// if the move is invalid, it wasn't successful and nog health was changed.
-			effect.setMoveSuccessful(false);
-			effect.setHealthChange(0);
+			effect.setMoveSuccesfull(false);
 			return;
 		}
-		else
+		
+		//TODO: actually execute the move.
+		switch(action)
 		{
-			// for the moment we assume that any valid move is going to be successful.
-			effect.setMoveSuccessful(true);
-			//TODO: actually execute the move.
-			switch(action)
-			{
-				case Heal:
-					//add the movers attack points to the hp of the unit of the target square
-					break;
-				case Attack:
-					//subtract the movers attack points to the hp of the unit of the target square
-					break;
-				case Move:
-					//change the current square of the mover to null and the target square to the mover.
-					effect.setHealthChange(0);
-					break;
-				default: 
-					break;
+			case Heal:
+				//add the movers attack points to the hp of the unit of the target square
+				break;
+			case Attack:
+				//subtract the movers attack points to the hp of the unit of the target square
+				break;
+			case Move:
+				//change the current square of the mover to null and the target square to the mover.
+				break;
+			default: 
+				break;
 			}
-		}
-		this.effectsOfThisMove.put(executingState, effect);
 	}
 	
 	//TODO: Check whether this move is valid in the current context.

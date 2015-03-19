@@ -3,7 +3,7 @@ import distributed.systems.das.units.Unit;
 
 public class MoveEffect
 {
-	boolean moveSuccessful;
+	boolean moveSuccesfull;
 	Unit initiator, subject;
 	Point target;
 	int HealthChange =0;
@@ -15,7 +15,7 @@ public class MoveEffect
 			MoveEffect effect = (MoveEffect)o;
 			
 			//TODO: write an equals method to check whether 2 units are 'the same'.
-			return  (this.moveSuccessful == effect.moveSuccessful)
+			return  (this.moveSuccesfull == effect.moveSuccesfull)
 					&& (this.target.equals(effect.target))
 					&& (this.initiator.Equals(effect.initiator))
 					&& (this.subject.Equals(effect.subject))
@@ -27,18 +27,13 @@ public class MoveEffect
 		}
 	}
 	
-	public void setMoveSuccessful(boolean b)
+	public void setMoveSuccesfull(boolean b)
 	{
-		this.moveSuccessful = b;
+		this.moveSuccesfull = b;
 	}
 	
 	public void setInitiator(Unit initiator)
 	{
 		this.initiator = initiator;
-	}
-	
-	public void setHealthChange(int healthChange)
-	{
-		this.HealthChange = healthChange;
 	}
 }

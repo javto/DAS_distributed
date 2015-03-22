@@ -117,8 +117,5 @@ public class Dragon extends Unit implements Runnable, Serializable {
 				e.printStackTrace();
 			}
 		}
-		clientSocket.unRegister();
-
 	}
-
 }

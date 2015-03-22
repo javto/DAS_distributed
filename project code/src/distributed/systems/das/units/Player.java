@@ -138,7 +138,6 @@ public class Player extends Unit implements Runnable, Serializable {
 				e.printStackTrace();
 			}
 		}
-		clientSocket.unRegister();
 	}
 
 }

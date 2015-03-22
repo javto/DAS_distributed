@@ -8,16 +8,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import distributed.systems.core.IMessageReceivedHandler;
+import distributed.systems.core.Message;
+import distributed.systems.core.UnitThread;
+import distributed.systems.core.exception.AlreadyAssignedIDException;
+import distributed.systems.core.exception.IDNotAssignedException;
 import distributed.systems.das.BattleField;
 import distributed.systems.das.GameState;
 import distributed.systems.das.MessageRequest;
-import distributed.systems.core.IMessageReceivedHandler;
-import distributed.systems.core.LocalSocket;
-import distributed.systems.core.Message;
-import distributed.systems.core.Socket;
-import distributed.systems.core.SynchronizedSocket;
-import distributed.systems.core.exception.AlreadyAssignedIDException;
-import distributed.systems.core.exception.IDNotAssignedException;
 
 /**
  * Base class for all players whom can 
@@ -44,7 +42,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 	private int unitID;
 
 	// The communication socket between this client and the board
-	protected Socket clientSocket;
+	protected UnitThread client;
 	
 	// Map messages from their ids
 	private Map<Integer, Message> messageList;
@@ -77,8 +75,6 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 	 * this specific unit.
 	 */
 	public Unit(int maxHealth, int attackPoints) {
-		Socket localSocket = new LocalSocket();
-
 		messageList = new HashMap<Integer, Message>();
 
 		// Initialize the max health and health
@@ -91,17 +87,9 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		unitID = BattleField.getBattleField().getNewUnitID();
 
 		// Create a new socket
-		clientSocket = new SynchronizedSocket(localSocket);
+		client = new UnitThread("" + unitID);
 
-		try {
-			// Try to register the socket
-			clientSocket.register("D" + unitID);
-		}
-		catch (AlreadyAssignedIDException e) {
-			System.err.println("Socket \"D" + unitID + "\" was already registered.");
-		}
-
-		clientSocket.addMessageReceivedHandler(this);
+		client.addMessageReceivedHandler(this);
 	}
 
 	/**
@@ -143,8 +131,8 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		
 		// Send a spawn message
 		try {
-			clientSocket.sendMessage(damageMessage, "localsocket://" + BattleField.serverID);
-		} catch (IDNotAssignedException e) {
+			client.sendMessage(damageMessage, "localsocket://" + BattleField.serverID);
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -167,10 +155,9 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 			healMessage.put("id", id);
 		}
 
-		// Send a spawn message
 		try {
-			clientSocket.sendMessage(healMessage, "localsocket://" + BattleField.serverID);
-		} catch (IDNotAssignedException e) {
+			client.sendMessage(healMessage, "localsocket://" + BattleField.serverID);
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -249,8 +236,8 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 
 		// Send a spawn message
 		try {
-			clientSocket.sendMessage(spawnMessage, "localsocket://" + BattleField.serverID);
-		} catch (IDNotAssignedException e) {
+			client.sendMessage(spawnMessage, "localsocket://" + BattleField.serverID);
+		} catch (InterruptedException e) {
 			System.err.println("No server found while spawning unit at location (" + x + ", " + y + ")");
 			return false;
 		}
@@ -277,8 +264,8 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 
 		// Send the getUnit message
 		try {
-			clientSocket.sendMessage(getMessage, "localsocket://" + BattleField.serverID);
-		} catch (IDNotAssignedException e1) {
+			client.sendMessage(getMessage, "localsocket://" + BattleField.serverID);
+		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -313,10 +300,9 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		getMessage.put("y", y);
 		getMessage.put("id", id);
 
-		// Send the getUnit message
 		try {
-			clientSocket.sendMessage(getMessage, "localsocket://" + BattleField.serverID);
-		} catch (IDNotAssignedException e1) {
+			client.sendMessage(getMessage, "localsocket://" + BattleField.serverID);
+		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -348,10 +334,9 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		removeMessage.put("y", y);
 		removeMessage.put("id", id);
 
-		// Send the removeUnit message
 		try {
-			clientSocket.sendMessage(removeMessage, "localsocket://" + BattleField.serverID);
-		} catch (IDNotAssignedException e) {
+			client.sendMessage(removeMessage, "localsocket://" + BattleField.serverID);
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -367,10 +352,9 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		moveMessage.put("id", id);
 		moveMessage.put("unit", this);
 
-		// Send the getUnit message
 		try {
-			clientSocket.sendMessage(moveMessage, "localsocket://" + BattleField.serverID);
-		} catch (IDNotAssignedException e1) {
+			client.sendMessage(moveMessage, "localsocket://" + BattleField.serverID);
+		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}

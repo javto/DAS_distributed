@@ -7,12 +7,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import distributed.systems.core.BattleFieldThread;
 import distributed.systems.core.IMessageReceivedHandler;
-import distributed.systems.core.LocalSocket;
 import distributed.systems.core.Message;
-import distributed.systems.core.Socket;
-import distributed.systems.core.SynchronizedSocket;
-import distributed.systems.core.exception.AlreadyAssignedIDException;
 import distributed.systems.core.exception.IDNotAssignedException;
 import distributed.systems.das.units.Dragon;
 import distributed.systems.das.units.Player;
@@ -29,6 +26,9 @@ import distributed.systems.das.units.Unit.UnitType;
  * @author Pieter Anemaet, Boaz Pat-El
  */
 public class BattleField implements IMessageReceivedHandler, Serializable {
+	/* the serial id necessary for the deep copy*/
+	private static final long serialVersionUID = -5410319266379346636L;
+
 	/* The array of units */
 	private Unit[][] map;
 
@@ -36,7 +36,7 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 	private static BattleField battlefield;
 
 	/* Primary socket of the battlefield */
-	private Socket serverSocket;
+	private BattleFieldThread serverSocket;
 
 	/*
 	 * The last id that was assigned to an unit. This variable is used to
@@ -58,17 +58,9 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 	 *            of the battlefield
 	 */
 	private BattleField(int width, int height) {
-		Socket local = new LocalSocket();
-
 		synchronized (this) {
 			map = new Unit[width][height];
-			try {
-				local.register(BattleField.serverID);
-			} catch (AlreadyAssignedIDException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			serverSocket = new SynchronizedSocket(local);
+			serverSocket = new BattleFieldThread("battleField");
 			serverSocket.addMessageReceivedHandler(this);
 			units = new ArrayList<Unit>();
 		}
@@ -295,8 +287,8 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 		try {
 			if (reply != null)
 				serverSocket.sendMessage(reply, origin);
-		} catch (IDNotAssignedException idnae) {
-			// Could happen if the target already logged out
+		} catch (IDNotAssignedException | InterruptedException e) {
+			//TODO:
 		}
 	}
 
@@ -312,7 +304,6 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 			unit.stopRunnerThread();
 		}
 
-		serverSocket.unRegister();
 	}
 
 	/**

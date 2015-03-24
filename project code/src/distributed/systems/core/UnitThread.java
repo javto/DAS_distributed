@@ -7,8 +7,10 @@ import distributed.systems.das.units.Unit;
 
 public class UnitThread extends Thread {
 
+	private BattleFieldThread battleFieldThread;
 	static final int MAXQUEUE = 1;
 	private String threadName;
+	private Unit unit;
 	BlockingQueue<Message> messages = new LinkedBlockingQueue<Message>();
 
 	public UnitThread(String name) {
@@ -20,7 +22,8 @@ public class UnitThread extends Thread {
 		System.out.println("Running " + threadName);
 		try {
 			while (true) {
-				putMessage(new Message());
+				unit.onMessageReceived(getMessage());
+				sleep(100);
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Thread " + threadName + " interrupted.");
@@ -37,7 +40,12 @@ public class UnitThread extends Thread {
 		notify();
 	}
 
-	// Called by Consumer
+	public synchronized void putBattleFieldThread(
+			BattleFieldThread battleFieldThread) {
+		this.battleFieldThread = battleFieldThread;
+	}
+
+	// Called by Battlefield
 	public synchronized Message getMessage() throws InterruptedException {
 		notify();
 		while (messages.size() == 0)
@@ -45,22 +53,20 @@ public class UnitThread extends Thread {
 		Message message = (Message) messages.poll();
 		return message;
 	}
-	
+
 	/**
 	 * add message Handler
 	 * 
 	 * @param unit
 	 */
-	public void addMessageReceivedHandler(Unit unit) {
-		try {
-			unit.onMessageReceived(getMessage());
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public synchronized void addMessageReceivedHandler(Unit unit) {
+		this.unit = unit;
+		Thread t = new Thread(this);
+		t.start();
 	}
 
-	public void sendMessage(Message message, String origin) throws InterruptedException {
+	public synchronized void sendMessage(Message message, String origin)
+			throws InterruptedException {
 		putMessage(message);
 	}
 }

@@ -11,8 +11,9 @@ import distributed.systems.core.exception.IDNotAssignedException;
 import distributed.systems.das.BattleField;
 
 public class BattleFieldThread extends Thread {
-	
+
 	HashMap<String, UnitThread> unitThreads = new HashMap<String, UnitThread>();
+	private BattleField battleField;
 	static final int MAXQUEUE = 1;
 	private String threadName;
 	BlockingQueue<Message> messages = new LinkedBlockingQueue<Message>();
@@ -26,18 +27,18 @@ public class BattleFieldThread extends Thread {
 		System.out.println("Running " + threadName);
 		try {
 			while (true) {
-				//iterate over every unit to check for new messages
+				// iterate over every unit to check for new messages
 				Iterator<Entry<String, UnitThread>> it = unitThreads.entrySet()
 						.iterator();
 				while (it.hasNext()) {
 					Map.Entry<String, UnitThread> pair = (Map.Entry<String, UnitThread>) it
 							.next();
 					System.out.println(pair.getKey() + " = " + pair.getValue());
+					UnitThread unitThreads = pair.getValue();
+					battleField.onMessageReceived(unitThreads.getMessage());
 					it.remove(); // avoids a ConcurrentModificationException
 				}
-				Message message = unitThreads.get("test").getMessage();
-				System.out.println("got message");
-				sleep(2000);
+				sleep(100);
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Thread " + threadName + " interrupted.");
@@ -45,11 +46,15 @@ public class BattleFieldThread extends Thread {
 		System.out.println("Thread " + threadName + " exiting.");
 	}
 
-	public void sendMessage(Message message, String origin)
+	public synchronized void sendMessage(Message message, String origin)
 			throws IDNotAssignedException, InterruptedException {
 		putMessage(message);
 	}
-	
+
+	public synchronized void putUnitThread(String name, UnitThread unitThread) {
+		unitThreads.put(name, unitThread);
+	}
+
 	private synchronized void putMessage(Message message)
 			throws InterruptedException {
 		while (messages.size() == MAXQUEUE)
@@ -58,7 +63,7 @@ public class BattleFieldThread extends Thread {
 		notify();
 	}
 
-	// Called by Consumer
+	// Called by units
 	public synchronized Message getMessage() throws InterruptedException {
 		notify();
 		while (messages.size() == 0)
@@ -67,13 +72,10 @@ public class BattleFieldThread extends Thread {
 		return message;
 	}
 
-	public void addMessageReceivedHandler(BattleField battleField) {
-		try {
-			battleField.onMessageReceived(getMessage());
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public synchronized void addMessageReceivedHandler(BattleField battleField) {
+		this.battleField = battleField;
+		Thread t = new Thread(this);
+		t.start();
 	}
 
 }

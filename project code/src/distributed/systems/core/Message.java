@@ -6,7 +6,7 @@ import distributed.systems.das.units.Unit.UnitType;
 
 public class Message {
 
-	private String id;
+	private int id;
 	private String origin;
 	private Unit unit;
 	private UnitType type;
@@ -48,23 +48,32 @@ public class Message {
 	public void put(String toPut, Object putThis) {
 		switch (toPut) {
 		case "id":
-			id = (String) putThis;
+			id = (Integer) putThis;
+			break;
 		case "origin":
 			origin = (String) putThis;
+			break;
 		case "unit":
 			unit = (Unit) putThis;
+			break;
 		case "type":
 			type = (UnitType) putThis;
+			break;
 		case "x":
 			x = (Integer) putThis;
+			break;
 		case "y":
 			y = (Integer) putThis;
+			break;
 		case "damage":
 			damage = (Integer) putThis;
+			break;
 		case "healed":
 			healed = (Integer) putThis;
+			break;
 		case "request":
 			request = (MessageRequest) putThis;
+			break;
 		default:
 			break;
 		}

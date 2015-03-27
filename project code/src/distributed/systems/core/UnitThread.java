@@ -22,7 +22,12 @@ public class UnitThread extends Thread {
 		System.out.println("Running " + threadName);
 		try {
 			while (true) {
-				unit.onMessageReceived(getMessage());
+				if(battleFieldThread != null) {
+					Message message = battleFieldThread.getMessage();
+					if(message!= null) {
+						unit.onMessageReceived(message);
+					}
+				}
 				sleep(100);
 			}
 		} catch (InterruptedException e) {

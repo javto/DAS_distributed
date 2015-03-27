@@ -60,9 +60,10 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 	private BattleField(int width, int height) {
 		synchronized (this) {
 			map = new Unit[width][height];
-			serverSocket = new BattleFieldThread("battleField");
+			serverSocket = new BattleFieldThread("BattleFieldAwesome");
 			serverSocket.addMessageReceivedHandler(this);
 			units = new ArrayList<Unit>();
+			
 		}
 
 	}
@@ -323,5 +324,13 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public BattleFieldThread getBattleFieldThread() {
+		if(serverSocket == null) {
+			serverSocket = new BattleFieldThread(serverID);
+			serverSocket.addMessageReceivedHandler(this);
+		}
+		return serverSocket;
 	}
 }

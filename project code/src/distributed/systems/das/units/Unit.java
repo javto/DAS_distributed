@@ -11,8 +11,6 @@ import java.util.Map;
 import distributed.systems.core.IMessageReceivedHandler;
 import distributed.systems.core.Message;
 import distributed.systems.core.UnitThread;
-import distributed.systems.core.exception.AlreadyAssignedIDException;
-import distributed.systems.core.exception.IDNotAssignedException;
 import distributed.systems.das.BattleField;
 import distributed.systems.das.GameState;
 import distributed.systems.das.MessageRequest;
@@ -90,6 +88,8 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		client = new UnitThread("" + unitID);
 
 		client.addMessageReceivedHandler(this);
+		
+		BattleField.getBattleField().getBattleFieldThread().putUnitThread(""+unitID, client);
 	}
 
 	/**
@@ -133,7 +133,6 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		try {
 			client.sendMessage(damageMessage, "localsocket://" + BattleField.serverID);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

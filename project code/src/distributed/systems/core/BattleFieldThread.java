@@ -25,6 +25,8 @@ public class BattleFieldThread extends Thread {
 
 	public void run() {
 		System.out.println("Running " + threadName);
+		UnitThread unitThread;
+		Message message;
 		try {
 			while (true) {
 				// iterate over every unit to check for new messages
@@ -34,8 +36,11 @@ public class BattleFieldThread extends Thread {
 					Map.Entry<String, UnitThread> pair = (Map.Entry<String, UnitThread>) it
 							.next();
 					System.out.println(pair.getKey() + " = " + pair.getValue());
-					UnitThread unitThreads = pair.getValue();
-					battleField.onMessageReceived(unitThreads.getMessage());
+					unitThread = pair.getValue();
+					message = unitThread.getMessage();
+					if (message != null) {
+						battleField.onMessageReceived(message);
+					}
 					it.remove(); // avoids a ConcurrentModificationException
 				}
 				sleep(100);

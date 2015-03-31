@@ -8,7 +8,6 @@ import distributed.systems.das.units.Unit;
 public class UnitThread extends Thread {
 
 	private BattleFieldThread battleFieldThread;
-	static final int MAXQUEUE = 100;
 	private String threadName;
 	private Unit unit;
 	BlockingQueue<Message> messages = new LinkedBlockingQueue<Message>();
@@ -24,7 +23,7 @@ public class UnitThread extends Thread {
 			while (true) {
 				System.out.println("check battlefield messages in Uthread");
 				if(battleFieldThread != null) {
-					Message message = battleFieldThread.getMessage();
+					Message message = battleFieldThread.getMessage(unit.getUnitID());
 					if(message!= null) {
 						unit.onMessageReceived(message);
 					}
@@ -39,9 +38,6 @@ public class UnitThread extends Thread {
 
 	private synchronized void putMessage(Message message)
 			throws InterruptedException {
-
-		while (messages.size() == MAXQUEUE)
-			wait();
 		messages.offer(message);
 		notify();
 	}

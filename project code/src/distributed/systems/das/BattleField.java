@@ -44,8 +44,8 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 	private int lastUnitID = 0;
 
 	public final static String serverID = "server";
-	public final static int MAP_WIDTH = 4;
-	public final static int MAP_HEIGHT = 4;
+	public final static int MAP_WIDTH = 3;
+	public final static int MAP_HEIGHT = 3;
 	private ArrayList<Unit> units;
 
 	/**
@@ -206,15 +206,15 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 		Message reply = null;
 		String origin = (String) message.get("origin");
 		MessageRequest request = (MessageRequest) message.get("request");
-		Unit unit;
+		Unit unit = null;
 		switch (request) {
 		case spawnUnit:
-			this.spawnUnit((Unit) message.get("unit"), (Integer) message.get("x"),
-					(Integer) message.get("y"));
+			this.spawnUnit((Unit) message.get("unit"),
+					(Integer) message.get("x"), (Integer) message.get("y"));
 			break;
 		case putUnit:
-			this.putUnit((Unit) message.get("unit"), (Integer) message.get("x"),
-					(Integer) message.get("y"));
+			this.putUnit((Unit) message.get("unit"),
+					(Integer) message.get("x"), (Integer) message.get("y"));
 			break;
 		case getUnit: {
 			reply = new Message();
@@ -238,12 +238,14 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 			 * the battlefield responded to.
 			 */
 			reply.put("id", message.get("id"));
-			if (getUnit(x, y) instanceof Player)
+			if (getUnit(x, y) instanceof Player) {
 				reply.put("type", UnitType.player);
-			else if (getUnit(x, y) instanceof Dragon)
+			} else if (getUnit(x, y) instanceof Dragon) {
 				reply.put("type", UnitType.dragon);
-			else
+			} else {
 				reply.put("type", UnitType.undefined);
+			}
+			reply.put("to", message.get("to"));
 			break;
 		}
 		case dealDamage: {
@@ -272,8 +274,8 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 		}
 		case moveUnit:
 			reply = new Message();
-			this.moveUnit((Unit) message.get("unit"), (Integer) message.get("x"),
-					(Integer) message.get("y"));
+			this.moveUnit((Unit) message.get("unit"),
+					(Integer) message.get("x"), (Integer) message.get("y"));
 			/*
 			 * Copy the id of the message so that the unit knows what message
 			 * the battlefield responded to.
@@ -281,13 +283,15 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 			reply.put("id", message.get("id"));
 			break;
 		case removeUnit:
-			this.removeUnit((Integer) message.get("x"), (Integer) message.get("y"));
+			this.removeUnit((Integer) message.get("x"),
+					(Integer) message.get("y"));
 			return;
 		}
 
 		try {
 			if (reply != null) {
 				System.out.println("BattleField: sending reply");
+				reply.put("to", message.get("to"));
 				reply.printMessageInfo();
 				serverSocket.sendMessage(reply, origin);
 			}
@@ -296,8 +300,6 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 			System.out.println(e.getMessage());
 		}
 	}
-
-	
 
 	/**
 	 * Close down the battlefield. Unregisters the serverSocket so the program

@@ -1,22 +1,21 @@
 package distributed.systems.core;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import distributed.systems.core.exception.IDNotAssignedException;
 import distributed.systems.das.BattleField;
 
 public class BattleFieldThread extends Thread {
 
 	HashMap<String, UnitThread> unitThreads = new HashMap<String, UnitThread>();
 	private BattleField battleField;
-	static final int MAXQUEUE = 100;
 	private String threadName;
-	BlockingQueue<Message> messages = new LinkedBlockingQueue<Message>();
+	List<Message> messages = Collections.synchronizedList(new ArrayList<Message>());
 
 	public BattleFieldThread(String name) {
 		threadName = name;
@@ -64,16 +63,23 @@ public class BattleFieldThread extends Thread {
 
 	private synchronized void putMessage(Message message)
 			throws InterruptedException {
-		messages.offer(message);
+		messages.add(0, message);
 		notify();
 	}
 
 	// Called by units
-	public synchronized Message getMessage() throws InterruptedException {
+	public synchronized Message getMessage(int unitID) throws InterruptedException {
 		System.out.println("Unit: getting BF message");
 		notify();
-		Message message = (Message) messages.poll();
-		return message;
+		//get latest message for the unit with correct unitID
+		for(int i = 0; i < messages.size(); i++) {	
+			Message message = (Message) messages.get(i);
+			if((int) message.get("to") == unitID) {
+				messages.remove(i);
+				return message;
+			}
+		}
+		return null;
 	}
 
 	public synchronized void addMessageReceivedHandler(BattleField battleField) {

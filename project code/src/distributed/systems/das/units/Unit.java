@@ -127,6 +127,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 			damageMessage.put("y", y);
 			damageMessage.put("damage", damage);
 			damageMessage.put("id", id);
+			damageMessage.put("to", unitID);
 		}
 
 		try {
@@ -152,6 +153,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 			healMessage.put("y", y);
 			healMessage.put("healed", healed);
 			healMessage.put("id", id);
+			healMessage.put("to", unitID);
 		}
 
 		try {
@@ -233,6 +235,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		spawnMessage.put("y", y);
 		spawnMessage.put("unit", this);
 		spawnMessage.put("id", id);
+		spawnMessage.put("to", unitID);
 
 		// Send a spawn message
 		try {
@@ -262,6 +265,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		getMessage.put("x", x);
 		getMessage.put("y", y);
 		getMessage.put("id", id);
+		getMessage.put("to", unitID);
 
 		// Send the getUnit message
 		try {
@@ -302,6 +306,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		getMessage.put("x", x);
 		getMessage.put("y", y);
 		getMessage.put("id", id);
+		getMessage.put("to", unitID);
 
 		try {
 			System.out.println("Unit " + unitID + " send getUnit message");
@@ -339,6 +344,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		removeMessage.put("x", x);
 		removeMessage.put("y", y);
 		removeMessage.put("id", id);
+		removeMessage.put("to", unitID);
 
 		try {
 			System.out.println("Unit " + unitID + " send removeUnit message");
@@ -357,6 +363,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		moveMessage.put("y", y);
 		moveMessage.put("id", id);
 		moveMessage.put("unit", this);
+		moveMessage.put("to", unitID);
 
 		try {
 			System.out.println("Unit " + unitID + " send move message");

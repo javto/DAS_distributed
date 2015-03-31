@@ -15,6 +15,7 @@ public class Message {
 	private int damage;
 	private int healed;
 	private MessageRequest request;
+	private int to;
 
 	public Message() {
 	}
@@ -33,6 +34,8 @@ public class Message {
 			return request;
 		case "id":
 			return id;
+		case "to":
+			return to;
 		case "unit":
 			return unit;
 		case "x":
@@ -49,6 +52,9 @@ public class Message {
 		switch (toPut) {
 		case "id":
 			id = (Integer) putThis;
+			break;
+		case "to":
+			to = (Integer) putThis;
 			break;
 		case "origin":
 			origin = (String) putThis;
@@ -89,10 +95,14 @@ public class Message {
 		UnitType unitType = (UnitType) get("type");
 		Integer damage = (Integer) get("damage");
 		Integer healed = (Integer) get("healed");
+		Integer to = (Integer) get("to");
 		StringBuilder info = new StringBuilder();
 		info.append("Message contents[");
 		if (origin != null) {
 			info.append(" origin: " + origin + ".");
+		}
+		if (to != null) {
+			info.append(" to: " + to + ".");
 		}
 		if (requestType != null) {
 			info.append(" requestType: " + requestType.name() + ".");

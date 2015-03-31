@@ -29,7 +29,7 @@ public class UnitThread extends Thread {
 						unit.onMessageReceived(message);
 					}
 				}
-				sleep(1000);
+				sleep(100);
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Thread " + threadName + " interrupted.");
@@ -74,6 +74,7 @@ public class UnitThread extends Thread {
 
 	public synchronized void sendMessage(Message message, String origin)
 			throws InterruptedException {
+		message.put("origin", origin);
 		putMessage(message);
 	}
 }

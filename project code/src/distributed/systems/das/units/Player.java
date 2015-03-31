@@ -73,7 +73,7 @@ public class Player extends Unit implements Runnable, Serializable {
 			try {			
 				/* Sleep while the player is considering its next move */
 				Thread.currentThread().sleep((int)(timeBetweenTurns * 500 * GameState.GAME_SPEED));
-
+				System.out.println("player starts turn");
 				/* Stop if the player runs out of hitpoints */
 				if (getHitPoints() <= 0)
 					break;

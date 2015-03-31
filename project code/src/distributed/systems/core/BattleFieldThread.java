@@ -42,9 +42,9 @@ public class BattleFieldThread extends Thread {
 					if (message != null) {
 						battleField.onMessageReceived(message);
 					}
-					it.remove(); // avoids a ConcurrentModificationException
+//					it.remove(); // avoids a ConcurrentModificationException
 				}
-				sleep(1000);
+				sleep(300);
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Thread " + threadName + " interrupted.");
@@ -53,18 +53,17 @@ public class BattleFieldThread extends Thread {
 	}
 
 	public synchronized void sendMessage(Message message, String origin)
-			throws IDNotAssignedException, InterruptedException {
+			throws InterruptedException {
+		message.put("origin", origin);
 		putMessage(message);
 	}
-
+	
 	public synchronized void putUnitThread(String name, UnitThread unitThread) {
 		unitThreads.put(name, unitThread);
 	}
 
 	private synchronized void putMessage(Message message)
 			throws InterruptedException {
-		while (messages.size() == MAXQUEUE)
-			wait();
 		messages.offer(message);
 		notify();
 	}
@@ -73,8 +72,6 @@ public class BattleFieldThread extends Thread {
 	public synchronized Message getMessage() throws InterruptedException {
 		System.out.println("Unit: getting BF message");
 		notify();
-//		while (messages.size() == 0)
-//			wait();
 		Message message = (Message) messages.poll();
 		return message;
 	}

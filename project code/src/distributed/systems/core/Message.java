@@ -78,4 +78,47 @@ public class Message {
 			break;
 		}
 	}
+
+	public void printMessageInfo() {
+		String origin = (String) get("origin");
+		MessageRequest requestType = (MessageRequest) get("request");
+		Integer id = (Integer) get("id");
+		Integer x = (Integer) get("x");
+		Integer y = (Integer) get("y");
+		Unit unitInfo = (Unit) get("unit");
+		UnitType unitType = (UnitType) get("type");
+		Integer damage = (Integer) get("damage");
+		Integer healed = (Integer) get("healed");
+		StringBuilder info = new StringBuilder();
+		info.append("Message contents[");
+		if (origin != null) {
+			info.append(" origin: " + origin + ".");
+		}
+		if (requestType != null) {
+			info.append(" requestType: " + requestType.name() + ".");
+		}
+		if (unitInfo != null) {
+			info.append(" unitID: " + unitInfo.getUnitID() + ".");
+		}
+		if (id != null) {
+			info.append(" id: " + id.intValue() + ".");
+		}
+		if (x != null) {
+			info.append(" x: " + x.intValue() + ".");
+		}
+		if (y != null) {
+			info.append(" y: " + y.intValue() + ".");
+		}
+		if (unitType != null) {
+			info.append(" unitType: " + unitType.name() + ".");
+		}
+		if (damage != null) {
+			info.append(" damage: " + damage.intValue() + ".");
+		}
+		if (healed != null) {
+			info.append(" healed: " + healed.intValue() + ".");
+		}
+		info.append("]");
+		System.out.println(info.toString());
+	}
 }

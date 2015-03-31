@@ -203,6 +203,12 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 	}
 
 	public void onMessageReceived(Message msg) {
+		System.out.println("BattleField: received message:");
+		System.out.println( msg.get("origin"));
+		System.out.println( ((MessageRequest) msg.get("request")).name());
+		System.out.println(""+((Unit) msg.get("unit")).getUnitID());
+		System.out.println(""+ msg.get("x"));
+		System.out.println(""+ msg.get("y")+"\n");
 		Message reply = null;
 		String origin = (String) msg.get("origin");
 		MessageRequest request = (MessageRequest) msg.get("request");
@@ -289,7 +295,8 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 			if (reply != null)
 				serverSocket.sendMessage(reply, origin);
 		} catch (IDNotAssignedException | InterruptedException e) {
-			//TODO:
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 

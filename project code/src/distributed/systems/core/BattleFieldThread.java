@@ -14,7 +14,7 @@ public class BattleFieldThread extends Thread {
 
 	HashMap<String, UnitThread> unitThreads = new HashMap<String, UnitThread>();
 	private BattleField battleField;
-	static final int MAXQUEUE = 1;
+	static final int MAXQUEUE = 100;
 	private String threadName;
 	BlockingQueue<Message> messages = new LinkedBlockingQueue<Message>();
 
@@ -29,6 +29,7 @@ public class BattleFieldThread extends Thread {
 		Message message;
 		try {
 			while (true) {
+				System.out.println("check unit's messages in BFthread");
 				// iterate over every unit to check for new messages
 				Iterator<Entry<String, UnitThread>> it = unitThreads.entrySet()
 						.iterator();
@@ -43,7 +44,7 @@ public class BattleFieldThread extends Thread {
 					}
 					it.remove(); // avoids a ConcurrentModificationException
 				}
-				sleep(100);
+				sleep(1000);
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Thread " + threadName + " interrupted.");
@@ -70,9 +71,10 @@ public class BattleFieldThread extends Thread {
 
 	// Called by units
 	public synchronized Message getMessage() throws InterruptedException {
+		System.out.println("Unit: getting BF message");
 		notify();
-		while (messages.size() == 0)
-			wait();
+//		while (messages.size() == 0)
+//			wait();
 		Message message = (Message) messages.poll();
 		return message;
 	}

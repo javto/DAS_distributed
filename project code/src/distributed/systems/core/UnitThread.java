@@ -8,7 +8,7 @@ import distributed.systems.das.units.Unit;
 public class UnitThread extends Thread {
 
 	private BattleFieldThread battleFieldThread;
-	static final int MAXQUEUE = 1;
+	static final int MAXQUEUE = 100;
 	private String threadName;
 	private Unit unit;
 	BlockingQueue<Message> messages = new LinkedBlockingQueue<Message>();
@@ -22,13 +22,14 @@ public class UnitThread extends Thread {
 		System.out.println("Running " + threadName);
 		try {
 			while (true) {
+				System.out.println("check battlefield messages in Uthread");
 				if(battleFieldThread != null) {
 					Message message = battleFieldThread.getMessage();
 					if(message!= null) {
 						unit.onMessageReceived(message);
 					}
 				}
-				sleep(100);
+				sleep(1000);
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Thread " + threadName + " interrupted.");
@@ -52,9 +53,10 @@ public class UnitThread extends Thread {
 
 	// Called by Battlefield
 	public synchronized Message getMessage() throws InterruptedException {
+		System.out.println("BattleField: getting unit message");
 		notify();
-		while (messages.size() == 0)
-			wait();
+//		while (messages.size() == 0)
+//			wait();
 		Message message = (Message) messages.poll();
 		return message;
 	}

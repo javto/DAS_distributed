@@ -131,6 +131,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		
 		// Send a spawn message
 		try {
+			System.out.println("Unit: send damage message");
 			client.sendMessage(damageMessage, "localsocket://" + BattleField.serverID);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -155,6 +156,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		}
 
 		try {
+			System.out.println("Unit: send heal message");
 			client.sendMessage(healMessage, "localsocket://" + BattleField.serverID);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -235,6 +237,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 
 		// Send a spawn message
 		try {
+			System.out.println("Unit: send spawn message");
 			client.sendMessage(spawnMessage, "localsocket://" + BattleField.serverID);
 		} catch (InterruptedException e) {
 			System.err.println("No server found while spawning unit at location (" + x + ", " + y + ")");
@@ -263,6 +266,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 
 		// Send the getUnit message
 		try {
+			System.out.println("Unit: send getType message");
 			client.sendMessage(getMessage, "localsocket://" + BattleField.serverID);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
@@ -300,15 +304,16 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		getMessage.put("id", id);
 
 		try {
+			System.out.println("Unit: send getUnit message");
 			client.sendMessage(getMessage, "localsocket://" + BattleField.serverID);
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
 		// Wait for the reply
 		while(!messageList.containsKey(id)) {
 			try {
+				System.out.println("waiting for reply containsKey");
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
 			}
@@ -334,6 +339,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		removeMessage.put("id", id);
 
 		try {
+			System.out.println("Unit: send removeUnit message");
 			client.sendMessage(removeMessage, "localsocket://" + BattleField.serverID);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -352,9 +358,9 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 		moveMessage.put("unit", this);
 
 		try {
+			System.out.println("Unit: send move message");
 			client.sendMessage(moveMessage, "localsocket://" + BattleField.serverID);
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -376,6 +382,7 @@ public abstract class Unit implements Serializable, IMessageReceivedHandler {
 	}
 
 	public void onMessageReceived(Message message) {
+		System.out.println("Unit: received message");
 		messageList.put((Integer)message.get("id"), message);
 	}
 	

@@ -44,8 +44,8 @@ public class BattleField implements IMessageReceivedHandler, Serializable {
 	private int lastUnitID = 0;
 
 	public final static String serverID = "server";
-	public final static int MAP_WIDTH = 3;
-	public final static int MAP_HEIGHT = 3;
+	public final static int MAP_WIDTH = 25;
+	public final static int MAP_HEIGHT = 25;
 	private ArrayList<Unit> units;
 
 	/**

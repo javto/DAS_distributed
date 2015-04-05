@@ -1,10 +1,30 @@
-\section{Experimental Results}
+\section{Experiments}
 \label{chap:expresults}
 %(recommended size: 1.5 pages)
 
-\subsection{Experimental Setup}
+\subsection{Experiment Design}
+This section explains the different experiment designs. The different experiments highlight different characteristics of the proposed system.
+
+\subsubsection{Scalability}
+The following experiments will put the performance and scalability of the system under test.
+
+\begin{itemize}
+\item \emph{Measure latencies when number of users go up.} The latency is measured by looking at difference between the time of a player's input and the time when the action is performed on the battlefield. If the latency is too high, the system might go into an inconsistent state or not register moves of players, which will result in players that do not want to play the game. 
+\item \emph{Influence of the number of dragons.} When the number of dragons is increased, relative to the number of players, the servers have more work to do to simulate the dragons, possibly resulting in latency for incoming messages from players. When we measure this latency we get a feeling for the performance of the system. 
+\item \emph{Measure message complexity} Look at how many messages are being sent around in the system at a different number of players and servers, this indicates an order of message complexity. It would be interesting to see how much the theoretical bounds differs from this simulated reality.
+\item \emph{Measure space complexity} Look at how much data is stored with different number of players and servers, this indicates a measure of space complexity. 
+\item \emph{Measure overhead caused by adding more servers} When a server is added, it needs to be registered in the system and more messages need to be passed within the system. This results in an overhead per server. This is measured by the number of messages that do not concern players, dragons or other game information relative to the number of game information messages.
+\end{itemize}
+
+\subsubsection{Fault Tolerance}
+Fault tolerance means that the system has a tolerance for errors, which might happen in the system. The amount of errors the system can tolerate before going into a wrong state or before the system crashes, indicates how resilient the system is against errors. There are a number of different failures that can happen and which the following experiments are designed for:
+
+\begin{itemize}
+\item \emph{Omission failure.} By simulating different percentages of message loss, it is possible to test how resilient the system is against omissions.
+\item \emph{Response failure.} Simulate two games fully including the exact moves, one with an increasing percentage of wrong answers from the servers and one normal. Now, it is possible to measure the difference between the two battlefields to see how tolerant it is against response failures. 
+\item \emph{Timing failure.} Simulate an increasing delay of an increasing percentage of messages to see what happens to the battlefield in terms of state.
+\item \emph{Arbitrary failure.} Generate a number of random responses at random times and look at what happens to the system at hand.
+\item \emph{Crash failure.} Simulate random server crashes, to see what happens when a server crashes.
+\end{itemize}
+
 % describe the working environments (DAS-4, Amazon EC2, etc.), the general workload and monitoring tools and libraries, other tools and libraries you have used to implement and deploy your system, other tools and libraries used to conduct your experiments.
-
-\subsection{Experiments}
-%describe the experiments you have conducted to analyze each system feature, such as consistency, scalability, fault-tolerance, and performance. Analyze the results obtained for each system feature. Use one sub-section per experiment (or feature). In the analysis, also report: i. Service metrics of the experiment, such as runtime and response time of the service, etc. ii. (optional) Usage metrics and costs of the experiment.
-

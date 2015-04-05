@@ -69,11 +69,12 @@ public class Dragon extends Unit implements Runnable, Serializable {
 		
 		this.running = true;
 
+		System.out.println("dragon start");
 		while(GameState.getRunningState() && this.running) {
 			try {
 				/* Sleep while the dragon is considering its next move */
 				Thread.currentThread().sleep((int)(timeBetweenTurns * 500 * GameState.GAME_SPEED));
-
+				System.out.println("dragon's turn starts");
 				/* Stop if the dragon runs out of hitpoints */
 				if (getHitPoints() <= 0)
 					break;
@@ -117,8 +118,5 @@ public class Dragon extends Unit implements Runnable, Serializable {
 				e.printStackTrace();
 			}
 		}
-		clientSocket.unRegister();
-
 	}
-
 }

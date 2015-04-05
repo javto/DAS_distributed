@@ -13,9 +13,9 @@ import distributed.systems.das.units.Player;
  * @author Pieter Anemaet, Boaz Pat-El
  */
 public class Core {
-	public static final int MIN_PLAYER_COUNT = 30;
-	public static final int MAX_PLAYER_COUNT = 60;
-	public static final int DRAGON_COUNT = 20;
+	public static final int MIN_PLAYER_COUNT = 30;//30;
+	public static final int MAX_PLAYER_COUNT = 60;//60;
+	public static final int DRAGON_COUNT = 20;//20;
 	public static final int TIME_BETWEEN_PLAYER_LOGIN = 5000; // In milliseconds
 	
 	public static BattleField battlefield; 
@@ -56,6 +56,7 @@ public class Core {
 		playerCount = (int)((MAX_PLAYER_COUNT - MIN_PLAYER_COUNT) * Math.random() + MIN_PLAYER_COUNT);
 		for(int i = 0; i < playerCount; i++)
 		{
+			
 			/* Once again, pick a random spot */
 			int x, y, attempt = 0;
 			do {
